@@ -38,7 +38,9 @@ def readFileLine(path, line_num):
 
 
 def getPathExt(path):
-    return os.path.splitext(path)[1]
+    basename = os.path.basename(path)
+    name, ext = os.path.splitext(basename)
+    return ext if ext else name
 
 
 class WordsProcessor:
@@ -52,7 +54,7 @@ class WordsProcessor:
         start_time = time.time()
         i = 1
         for path in path_list:
-            if i % step == 0:
+            if step == 0 or i % step == 0:
                 print '  %d/%d' % (i, count)
             i += 1
             #print 'processing %s...' % path
@@ -80,7 +82,7 @@ class Main(QtGui.QMainWindow):
         else:
             self.wordsHistory = []
 
-        for checkbox in [self.nutCheckBox, self.blkCheckBox, self.headersCheckBox, self.sourcesCheckBox]:
+        for checkbox in [self.nutCheckBox, self.blkCheckBox, self.headersCheckBox, self.sourcesCheckBox, self.jamfilesCheckBox]:
             checkbox.toggled.connect(self.on_extensionCheckBox_toggled)
 
         self.fileEditor.setFont(QtGui.QFont('Courier New'))
@@ -112,11 +114,14 @@ class Main(QtGui.QMainWindow):
             result.extend([ '.h', '.hpp' ])
         if get_all or self.sourcesCheckBox.isChecked():
             result.extend([ '.c', '.cpp' ])
+        if get_all or self.jamfilesCheckBox.isChecked():
+            result.extend([ 'jamfile' ])
         return result
 
     #noinspection PyUnusedLocal
     def on_extensionCheckBox_toggled(self, is_checked):
-        self._refreshTree()
+        #self._refreshTree()
+        return
 
     @_clickedFixer
     def on_processButton_clicked(self):
@@ -173,9 +178,10 @@ class Main(QtGui.QMainWindow):
         print 'refreshing tree with %d words' % count
         start_time = time.time()
         i = 1
+        matches = 0
         expanded = self.expandCheckbox.isChecked()
         for word in words_list:
-            if i % step == 0:
+            if step == 0 or i % step == 0:
                 print '  %d/%d' % (i, count)
             i += 1
             if not self._isWordFitting(word, filterText):
@@ -190,10 +196,11 @@ class Main(QtGui.QMainWindow):
             for path in sorted(path_list):
                 line_nums = path_info[path]
                 QtGui.QTreeWidgetItem( adding_item, QtCore.QStringList([ '%s (%d)' % (path, len(line_nums)) ]) )
+            matches += 1
 
             adding_item.setExpanded(expanded)
         self.linesTree.clear()
-        print '...tree refreshed in %.3f sec' % (time.time() - start_time)
+        print '...tree refreshed in %.3f sec, found %d matches for current filter `%s`' % (time.time() - start_time, matches, filterText)
 
     def on_quickFindEdit_returnPressed(self):
         filterText = self._getFilterText()
