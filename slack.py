@@ -13,8 +13,11 @@ def _clickedFixer(callback):
     return _wrapper
 
 
-WORD_RE = re.compile(r'((?P<quote>")?\b[a-zA-Z_]\w*\b(?(quote)"))')
-WORD_BLK_RE = re.compile(r'\b[a-zA-Z_]\w*(?:-[a-zA-Z_]\w*)*\b')
+def wrap_re(word_re):
+    return r'((?P<quote>")?\b%s\b(?(quote)"))' % word_re
+
+WORD_RE = re.compile(wrap_re(r'[a-zA-Z_]\w*'))
+WORD_BLK_RE = re.compile(wrap_re(r'[a-zA-Z_]\w*(?:-[a-zA-Z_]\w*)*'))
 
 
 def parseFile(path):
