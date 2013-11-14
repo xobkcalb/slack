@@ -118,7 +118,7 @@ class Main(QtGui.QMainWindow):
         if get_all or self.sourcesCheckBox.isChecked():
             result.extend([ '.c', '.cpp' ])
         if get_all or self.jamfilesCheckBox.isChecked():
-            result.extend([ 'jamfile' ])
+            result.extend([ 'jamfile', '.jam' ])
         return result
 
     #noinspection PyUnusedLocal
