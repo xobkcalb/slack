@@ -203,6 +203,8 @@ class Main(QtGui.QMainWindow):
 
             adding_item.setExpanded(expanded)
         self.linesTree.clear()
+        if matches == 1:
+            self.wordsTree.setCurrentItem(adding_item)
         print '...tree refreshed in %.3f sec, found %d matches for current filter `%s`' % (time.time() - start_time, matches, filterText)
 
     def on_quickFindEdit_returnPressed(self):
