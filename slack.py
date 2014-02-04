@@ -14,9 +14,9 @@ def _clickedFixer(callback):
 
 
 def wrap_re(word_re):
-    return r'((?P<quote>")?\b%s\b(?(quote)"))' % word_re
+    return r'((?P<quote>")?\b(?:%s)\b(?(quote)"))' % word_re
 
-WORD_RE = re.compile(wrap_re(r'[a-zA-Z_]\w*'))
+WORD_RE = re.compile(wrap_re(r'[a-zA-Z_]\w*|(?:0|0[0-7]+|[1-9][0-9]*|0[xX][0-9a-fA-F]+)(?:[uU]?[lL]{0,2}|[lL]{0,2}[uU]?)|\d+\.\d*|\.\d+|(?:\d+|\d+\.\d*|\.\d+)[eE][+\-]\d+'))
 WORD_BLK_RE = re.compile(wrap_re(r'[a-zA-Z_]\w*(?:-[a-zA-Z_]\w*)*'))
 
 
